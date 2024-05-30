@@ -25,17 +25,22 @@ const ArchitectsDaughter = Architects_Daughter({
 
 const Login = () => {
   const router = useRouter();
-  // const { setUserInfo } = useAppStore();
+  const { setUserInfo } = useAppStore();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = async () => {
-    const response = await apiClient.post(ADMIN_API_ROUTES.LOGIN, {
-      email,
-      password,
-    });
-    if (response.data.userInfo) {
-      // setUserInfo(response.data.userInfo);
-      // router.push("/admin");
+    try {
+      const response = await apiClient.post(ADMIN_API_ROUTES.LOGIN, {
+        email,
+        password,
+      });
+      if (response.data.userInfo) {
+        setUserInfo(response.data.userInfo);
+        router.push("/admin");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

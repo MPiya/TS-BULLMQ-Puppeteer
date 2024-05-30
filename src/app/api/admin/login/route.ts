@@ -15,7 +15,6 @@ const createToken = async (email: string, userId: number) => {
 };
 
 export async function POST(request: Request) {
-
   try {
     const { email, password } = await request.json();
 
@@ -27,8 +26,10 @@ export async function POST(request: Request) {
     }
 
     const user = await prisma.admin.findUnique({
-      where: { email, password },
+      where: { email, password: sha256(password).toString() },
     });
+
+    console.log({ password: sha256(password).toString() });
 
     if (!user) {
       return NextResponse.json(
