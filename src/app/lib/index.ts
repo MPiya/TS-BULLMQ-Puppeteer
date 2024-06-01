@@ -1,5 +1,5 @@
 import prisma from "./prisma";
-// import { connection } from "./redis";
+import { connection } from "./redis";
 import apiClient from "./api-client";
-// import { importQueue } from "./queue";
-export { apiClient, prisma };
+import { importQueue } from "./queue";
+export { apiClient, prisma, connection, importQueue };
