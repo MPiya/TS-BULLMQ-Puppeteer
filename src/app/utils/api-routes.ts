@@ -1,5 +1,8 @@
 const baseRoute = `${process.env.NEXT_PUBLIC_DOMAIN}/api`;
+console.log("Domain",process.env.NEXT_PUBLIC_DOMAIN)
+// const baseRoute = `http://localhost:3000/api`;
 
+// const baseRoute = `http://localhost:3000/api`;
 // export const USER_API_ROUTES = {
 //   SIGNUP: "/auth/signup",
 //   LOGIN: "/auth/login",
@@ -20,9 +23,12 @@ const baseRoute = `${process.env.NEXT_PUBLIC_DOMAIN}/api`;
 // };
 
 export const ADMIN_API_ROUTES = {
-  LOGIN: "/admin/login",
-  DASHBOARD_SCRAPING_CHART_DATA: `${baseRoute}/admin/dashboard/scraping-chart-data `,
+  LOGIN: `${baseRoute}/admin/login`,
+  DASHBOARD_SCRAPING_CHAT_DATA: `${baseRoute}/admin/dashboard/scraping-chart-data `,
   DASHBOARD_METRICS: `${baseRoute}/admin/dashboard/metrics `,
-  CREATE_JOB: "/admin/create-job",
-  JOB_DETAILS: "/admin/job-details",
+
+  CREATE_JOB: `${baseRoute}/admin/create-job`,
+  JOB_DETAILS: `${baseRoute}/admin/job-details`,
+  // CREATE_JOB: `http://localhost:3000/api/admin/create-job`,
+  // JOB_DETAILS: `http://localhost:3000/api/admin/job-details`,
 };

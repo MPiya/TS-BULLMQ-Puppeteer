@@ -8,7 +8,10 @@ const ScrapingQueue = () => {
   const [ongoingJobs, setOngoingJobs] = useState(0);
   useEffect(() => {
     const getData = async () => {
-      const data = await apiClient.get(ADMIN_API_ROUTES.JOB_DETAILS);
+      const data = await axios.get(
+        // "http://localhost:3000/api/admin/job-details"
+        ADMIN_API_ROUTES.JOB_DETAILS
+      );
       setOngoingJobs(data.data.onGoingJobs);
     };
     const interval = setInterval(() => getData(), 3000);
