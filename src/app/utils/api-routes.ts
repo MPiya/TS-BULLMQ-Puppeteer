@@ -1,5 +1,5 @@
 const baseRoute = `${process.env.NEXT_PUBLIC_DOMAIN}/api`;
-console.log("Domain",process.env.NEXT_PUBLIC_DOMAIN)
+console.log("Domain", process.env.NEXT_PUBLIC_DOMAIN);
 // const baseRoute = `http://localhost:3000/api`;
 
 // const baseRoute = `http://localhost:3000/api`;

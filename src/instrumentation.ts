@@ -2,23 +2,65 @@
 // import prisma from "./lib/prisma";
 // import { startPackageScraping } from "./scraping/packageScraping";
 // import { startFlightScraping } from "./scraping/flightsScraping";
+
+import { Browser } from "puppeteer";
+import { startLocationScraping } from "./app/scraping";
+
 // import { startHotelScraping } from "./scraping/hotelScraping";
 
 // const SBR_WS_ENDPOINT = process.env.SBR_WS_ENDPOINT;
+
+const SBR_WS_ENDPOINT =
+  "wss://brd-customer-hl_b1070d35-zone-arklyte:4j5nwgca9055@brd.superproxy.io:9222";
 
 export const register = async () => {
   //This if statement is important, read here: https://nextjs.org/docs/app/building-your-application/optimizing/instrumentation
   if (process.env.NEXT_RUNTIME === "nodejs") {
     // Check for admins
     const { Worker } = await import("bullmq");
-    const { connection } = await import("@/app/lib/redis");
+    const { connection, importQueue, prisma } = await import("@/app/lib/");
+    const puppeteer = await import("puppeteer");
 
-    new Worker("importQueue", async (job) => { console.log({job})}, {
-      connection,
-      concurrency: 10,
-      removeOnComplete: { count: 1000 },
-      removeOnFail: { count: 5000 },
-    });
+    new Worker(
+      "importQueue",
+      async (job) => {
+        let browser: undefined | Browser = undefined;
+        console.log({ job });
+
+        try {
+          browser = await puppeteer.connect({
+            browserWSEndpoint: SBR_WS_ENDPOINT,
+          });
+
+          const page = await browser.newPage();
+          console.log("before if", job.data);
+          if (job.data.jobType.type === "location") {
+            console.log("Connected! Navigating to " + job.data.url);
+            await page.goto(job.data.url, { timeout: 60000 });
+            console.log("Navigated! Scraping page content...");
+            const packages = await startLocationScraping(page);
+
+            console.log({ packages });
+          }
+        } catch (error) {
+          console.log(error);
+
+          await prisma.jobs.update({
+            where: { id: job.data.id },
+            data: { isComplete: true, status: "failed" },
+          });
+        } finally {
+          await browser?.close();
+          console.log("Browser clsoed sucessfully");
+        }
+      },
+      {
+        connection,
+        concurrency: 10,
+        removeOnComplete: { count: 1000 },
+        removeOnFail: { count: 5000 },
+      }
+    );
   }
 };
 
